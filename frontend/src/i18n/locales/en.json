@@ -1,0 +1,14 @@
+{
+  "app": {
+    "title": "Chearip"
+  },
+  "language": {
+    "switchTo": "日本語",
+    "switchLabel": "Switch language to Japanese"
+  },
+  "api": {
+    "ok": "API connected",
+    "error": "API unreachable",
+    "loading": "Checking API…"
+  }
+}

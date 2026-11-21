@@ -1,0 +1,14 @@
+{
+  "app": {
+    "title": "Chearip"
+  },
+  "language": {
+    "switchTo": "English",
+    "switchLabel": "表示言語を英語に切り替える"
+  },
+  "api": {
+    "ok": "API接続済み",
+    "error": "APIに接続できません",
+    "loading": "API確認中…"
+  }
+}
