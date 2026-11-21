@@ -4,6 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from geoalchemy2 import alembic_helpers
 
 from app import models  # noqa: F401  (registers models on Base.metadata)
 from app.config import settings
@@ -20,6 +21,15 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
+
+# GeoAlchemy2 helpers: skip PostGIS internal tables (spatial_ref_sys, ...),
+# render Geography/Geometry types with their imports, and avoid emitting the
+# spatial index twice (GeoAlchemy2 creates it with the table).
+GEO_OPTIONS = {
+    "include_object": alembic_helpers.include_object,
+    "process_revision_directives": alembic_helpers.writer,
+    "render_item": alembic_helpers.render_item,
+}
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -45,6 +55,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        **GEO_OPTIONS,
     )
 
     with context.begin_transaction():
@@ -66,7 +77,7 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection, target_metadata=target_metadata, **GEO_OPTIONS
         )
 
         with context.begin_transaction():
