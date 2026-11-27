@@ -3,7 +3,7 @@ from enum import StrEnum
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class HealthOut(BaseModel):
@@ -54,6 +54,29 @@ FACILITY_LABELS: dict[str, Facility] = {
     "身障者トイレ": Facility.accessible_toilet,
     "ショップ": Facility.shop,
 }
+
+
+class StationIn(BaseModel):
+    """A station as parsed from its official page.
+
+    It has no id, updated_at, or English fields, so the scraper can never write them.
+    """
+
+    source_id: int
+    name: str = Field(min_length=1)
+    prefecture: str = Field(min_length=1)
+    description: str | None = None
+    postal_code: str | None = None
+    address: str | None = None
+    latitude: float | None = None
+    longitude: float | None = None
+    tel: str | None = None
+    parking: str | None = None
+    opening_hours: str | None = None
+    map_code: str | None = None
+    websites: list[str] = Field(default_factory=list)
+    images: list[str] = Field(default_factory=list)
+    facilities: list[Facility] = Field(default_factory=list)
 
 
 class StationOut(BaseModel):
